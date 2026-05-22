@@ -5,8 +5,8 @@ const app = express();
 app.use(express.json());
 
 // Twilio की जानकारी
-const accountSid = 'ACe295bf1d213e913'; 
-const authToken = '9499831323a3bf98f8'; 
+const accountSid = 'ACe295bf1d213e91330c0921d79067f009'; 
+const authToken = '9499831323a3bf98f82255e8dd3fddb4'; 
 const client = require('twilio')(accountSid, authToken);
 
 app.post('/send-otp', (req, res) => {

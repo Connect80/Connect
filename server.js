@@ -4,37 +4,36 @@ const twilio = require('twilio');
 
 app.use(express.json());
 
+// आपकी Twilio डिटेल्स
 const accountSid = 'ACe295bf1d213e91330c0921d79067f009';
-const authToken = 'YOUR_AUTH_TOKEN';
+const authToken = '3d5313ebfc53a224a1f20dfc03fba045';
 const serviceSid = 'VAdca74f35326707c404bd5214dbbfd84e';
-const twilioPhoneNumber = '+18787325922';
+
+// फिक्स किया हुआ डेटा
+const myVerifiedNumber = '+918690347348'; // जिस पर OTP आएगा
+const twilioNumber = '+18787325922';      // जो आपको Twilio से मिला है
 
 const client = new twilio(accountSid, authToken);
 
 app.post('/send-otp', (req, res) => {
-    const phoneNumber = '+918690347348';
-
+    // यहाँ 'from' के तौर पर आपका Twilio नंबर इस्तेमाल हो रहा है
     client.verify.v2.services(serviceSid)
         .verifications
         .create({ 
-            to: phoneNumber, 
-            channel: 'sms' 
+            to: myVerifiedNumber, 
+            channel: 'sms',
+            from: twilioNumber 
         })
         .then(verification => {
-            res.status(200).json({ 
-                success: true, 
-                sid: verification.sid,
-                sender: twilioPhoneNumber 
-            });
+            res.status(200).json({ success: true, sid: verification.sid });
         })
         .catch(err => {
-            res.status(500).json({ 
-                success: false, 
-                error: err.message 
-            });
+            console.error("Twilio Error:", err.message);
+            res.status(500).json({ success: false, error: err.message });
         });
 });
 
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
